@@ -4,7 +4,7 @@ import authRouter from "./auth/auth.router.js";
 import authValidator from './middleware/auth.validator.js';
 
 const router = express.Router();
-router.use('/user', authValidator, userRouter);
+router.use('/user', authValidator(), userRouter);
 router.use('/auth', authRouter);
 
 export default router;

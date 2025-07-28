@@ -1,22 +1,16 @@
-import { Strategy as LocalStrategy } from "passport-local";
+import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
 import userService from '../user/user.service.js';
-import authService from "./auth.service.js";
 
-export const PassportLocalStrategy = new LocalStrategy(
-    { usernameField: 'email' },
-    async (email, password, done) => {
-        authService.login(email, password)
+/**
+ * @returns {JwtStrategy}
+ */
+export function createPassportJwtStrategy() {
+    return new JwtStrategy({
+        secretOrKey: process.env.JWT_SECRET,
+        jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
+    }, async (payload, done) => {
+        userService.getNotBlockedUserById(payload.id)
             .then(user => done(null, user))
-            .catch(err => done(err, null));
-    }
-);
-
-export const passportUserSerializer = (user, done) => {
-    done(null, user.id);
-};
-
-export const passportUserDeserializer = async (id, done) => {
-    userService.getNotBlockedUserById(id)
-        .then(user => done(null, user))
-        .catch(err => done(err, null));
-};
+            .catch(e => done(e, null))
+    });
+}

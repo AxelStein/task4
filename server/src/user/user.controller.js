@@ -1,7 +1,7 @@
 import express from 'express';
 import userService from './user.service.js';
 
-export default {
+const controller = {
 
     /**
      * @param {express.Request} req 
@@ -17,7 +17,8 @@ export default {
      * @param {express.Response} res 
      */
     blockByIds: async (req, res) => {
-        await userService.blockByIds(req.body.ids, req.body.block);
+        const { ids, block } = req.body;
+        await userService.blockByIds(ids, block);
         res.sendStatus(200);
     },
 
@@ -30,3 +31,5 @@ export default {
         res.sendStatus(200);
     }
 }
+
+export default controller;

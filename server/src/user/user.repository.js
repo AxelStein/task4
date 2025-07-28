@@ -14,8 +14,7 @@ const doOnUsers = (ids, action) => new Promise((resolve, reject) => {
     }).then(() => resolve()).catch(e => reject(e));
 });
 
-export default {
-
+const repository = {
     /**
      * @param {string} name 
      * @param {string} email 
@@ -83,3 +82,5 @@ export default {
         });
     }
 }
+
+export default repository;

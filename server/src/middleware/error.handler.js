@@ -25,7 +25,7 @@ const errorHandler = (err, req, res, _) => {
             const fieldName = Object.keys(err.fields)[0];
             const fieldValue = err.fields[fieldName];
             if (fieldName === "email") {
-                message = 'Registration failed. Please try a different email.';
+                message = 'Signup failed. Please try a different email or password.';
             } else {
                 message = `The ${fieldName} '${fieldValue}' is already taken.`;
             }

@@ -1,8 +1,7 @@
 import User from './user.model.js';
 import userRepository from './user.repository.js';
 
-export default {
-
+const service = {
     /**
      * @param {string} name 
      * @param {string} email 
@@ -19,7 +18,6 @@ export default {
      * @returns {Promise<Array<User>>}
      */
     getUsers(sortBy = 'lastSeen', sortAsc = false) {
-        console.log(`sortBy=${sortBy} sortAsc=${sortAsc}`);
         return userRepository.getUsers(sortBy, sortAsc);
     },
 
@@ -56,6 +54,8 @@ export default {
      * @returns {Promise<boolean>}
      */
     deleteByIds(ids) {
-       return userRepository.deleteByIds(ids);
+        return userRepository.deleteByIds(ids);
     }
 }
+
+export default service;

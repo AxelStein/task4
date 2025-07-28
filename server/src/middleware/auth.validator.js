@@ -1,7 +1,5 @@
-const authValidator = (req, res, next) => {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-    return res.redirect('/login');
-}
+import passport from "passport";
+
+const authValidator = () => passport.authenticate('jwt', { session: false });
+
 export default authValidator;
