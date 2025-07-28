@@ -13,12 +13,12 @@ const errorHandler = (err, req, res, _) => {
 
     let statusCode = 500;
     let message = 'An unexpected error occured. Please try again later';
-    let data = undefined;
+    let details = undefined;
 
     if (err instanceof ApiError) {
         statusCode = err.statusCode;
         message = err.message;
-        data = err.data;
+        details = err.details;
     } else if (err.name === 'SequelizeUniqueConstraintError') {
         if (err.fields && Object.keys(err.fields).length > 0) {
             statusCode = 400;
@@ -32,7 +32,7 @@ const errorHandler = (err, req, res, _) => {
         }
     }
 
-    res.status(statusCode).send({ message, data });
+    res.status(statusCode).send({ message, details });
 }
 
 export default errorHandler;

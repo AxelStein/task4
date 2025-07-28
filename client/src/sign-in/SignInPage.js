@@ -7,12 +7,13 @@ import Stack from 'react-bootstrap/Stack';
 import apiClient from '../api/api.client.js';
 import { useState } from 'react';
 import Alert from 'react-bootstrap/Alert';
+import apiErrorHandler from '../api/error.handler.js';
 
 function SigninPage() {
   const [validated, setValidated] = useState(false);
-  const [error, setError] = useState(null);
-  const [emailError, setEmailError] = useState(null);
-  const [passwordError, setPasswordError] = useState(null);
+  const [error, setError] = useState(undefined);
+  const [emailError, setEmailError] = useState(undefined);
+  const [passwordError, setPasswordError] = useState(undefined);
   const [isLoading, setLoading] = useState(false);
 
   const onEmailChange = () => {
@@ -39,20 +40,23 @@ function SigninPage() {
     setTimeout(() => {
       apiClient.post('/auth/sign-in', body)
         .then(res => {
-          setLoading(false);
           setValidated(true);
           console.log('success');
         })
         .catch(err => {
-          setValidated(false);
           setLoading(false);
-          setError(err.response.data.message);
-          /*
-          setEmailError('Invalid email');
-          setPasswordError('Invalid password');
-          */
-          console.error(err.response.data);
-        });
+
+          const data = apiErrorHandler(err);
+          const details = data.details;
+
+          if (details && (details.email || details.password)) {
+            setEmailError(details.email);
+            setPasswordError(details.password);
+          } else {
+            setError(data.message);
+          }
+        })
+        .finally(() => setLoading(false));
     }, 500);
   };
 
@@ -75,7 +79,7 @@ function SigninPage() {
                     placeholder='Enter email'
                     disabled={isLoading}
                     onChange={onEmailChange}
-                    isInvalid={emailError != null}
+                    isInvalid={emailError}
                     name='email' />
                   <Form.Control.Feedback type='invalid'>{emailError}</Form.Control.Feedback>
                 </Form.Group>
@@ -88,13 +92,13 @@ function SigninPage() {
                     placeholder='Password'
                     disabled={isLoading}
                     onChange={onPasswordChange}
-                    isInvalid={passwordError != null}
+                    isInvalid={passwordError}
                     name='password' />
                   <Form.Control.Feedback type='invalid'>{passwordError}</Form.Control.Feedback>
                 </Form.Group>
 
                 <div className='d-grid'>
-                  <Button variant='outline-primary' type='Submit' disabled={isLoading}>{isLoading ? 'Loading...' : 'Login'}</Button>
+                  <Button variant='outline-primary' type='Submit' disabled={isLoading}>{isLoading ? 'Loading...' : 'Sign in'}</Button>
                 </div>
               </Form>
             </Stack>

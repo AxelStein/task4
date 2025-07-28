@@ -2,11 +2,19 @@ import Joi from 'joi';
 
 const emailSchema = Joi.string()
     .email()
-    .required();
+    .required()
+    .messages({
+        'string.email': 'Invalid email',
+        'string.empty': 'Email is required'
+    });
 
 const passwordSchema = Joi.string()
-    .min(1)
-    .required();
+    .regex(/^\S*$/)
+    .required()
+    .messages({
+        'string.pattern.base': 'No whitespaces allowed in password',
+        'string.empty': 'Password is required'
+    });
 
 export const loginSchema = Joi.object({
     email: emailSchema,
@@ -18,8 +26,6 @@ export const signupSchema = Joi.object({
         .min(1)
         .max(99)
         .required(),
-
     email: emailSchema,
-
     password: passwordSchema,
 }).required();
