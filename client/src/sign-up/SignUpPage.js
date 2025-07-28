@@ -1,7 +1,6 @@
 import { Button, Navbar, Nav } from 'react-bootstrap';
 
-
-export default function LoginPage() {
+export default function SignUpPage() {
     return (
         <div>
           <Navbar bg="dark" variant="dark" expand="lg">

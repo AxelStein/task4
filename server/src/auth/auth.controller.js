@@ -6,7 +6,7 @@ const controller = {
      * @param {express.Request} req 
      * @param {express.Response} res 
      */
-    login: async (req, res) => {
+    signIn: async (req, res) => {
         const { email, password } = req.body;
         res.send(await authService.login(email, password));
     },
@@ -15,7 +15,7 @@ const controller = {
      * @param {express.Request} req 
      * @param {express.Response} res 
      */
-    signup: async (req, res) => {
+    signUp: async (req, res) => {
         const { name, email, password } = req.body;
         res.send(await authService.signup(name, email, password));
     },
