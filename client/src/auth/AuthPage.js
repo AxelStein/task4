@@ -9,12 +9,18 @@ import { useState } from 'react';
 import Alert from 'react-bootstrap/Alert';
 import apiErrorHandler from '../api/error.handler.js';
 
-function SigninPage() {
+function AuthPage(isSignIn) {
   const [validated, setValidated] = useState(false);
-  const [error, setError] = useState(undefined);
-  const [emailError, setEmailError] = useState(undefined);
-  const [passwordError, setPasswordError] = useState(undefined);
+  const [error, setError] = useState(null);
+  const [nameError, setNameError] = useState(null);
+  const [emailError, setEmailError] = useState(null);
+  const [passwordError, setPasswordError] = useState(null);
   const [isLoading, setLoading] = useState(false);
+
+  const onNameChange = () => {
+    setNameError(null);
+    setError(null);
+  };
 
   const onEmailChange = () => {
     setEmailError(null);
@@ -34,12 +40,15 @@ function SigninPage() {
       email: form.get("email"),
       password: form.get("password")
     };
+    if (!isSignIn) {
+      body.name = form.get("name");
+    }
 
     setLoading(true);
 
     setTimeout(() => {
-      apiClient.post('/auth/sign-in', body)
-        .then(res => {
+      apiClient.post(isSignIn ? '/auth/sign-in' : '/auth/sign-up', body)
+        .then(() => {
           setValidated(true);
           console.log('success');
         })
@@ -49,7 +58,8 @@ function SigninPage() {
           const data = apiErrorHandler(err);
           const details = data.details;
 
-          if (details && (details.email || details.password)) {
+          if (details && (details.name || details.email || details.password)) {
+            setNameError(details.name);
             setEmailError(details.email);
             setPasswordError(details.password);
           } else {
@@ -66,11 +76,24 @@ function SigninPage() {
         <Row className='justify-content-center'>
           <Col md={6}>
             <Stack>
-              <h1>Sign in to App</h1>
+              <h1 className='mb-5'>{isSignIn ? 'Sign in to App' : 'Sign up to App'}</h1>
 
               {error && (<Alert variant='danger'>{error}</Alert>)}
 
               <Form validated={validated} onSubmit={handleSubmit}>
+                {!isSignIn && (
+                  <Form.Group className='mb-3' controlId='formName'>
+                    <Form.Label>Name</Form.Label>
+                    <Form.Control
+                      required type='name'
+                      placeholder='Enter name'
+                      isInvalid={nameError}
+                      onChange={onNameChange}
+                      name='name' />
+                    <Form.Control.Feedback type='invalid'>{nameError}</Form.Control.Feedback>
+                  </Form.Group>
+                )}
+
                 <Form.Group className='mb-3' controlId='formEmail'>
                   <Form.Label>Email</Form.Label>
                   <Form.Control
@@ -89,7 +112,7 @@ function SigninPage() {
                   <Form.Control
                     required
                     type='password'
-                    placeholder='Password'
+                    placeholder='Enter password'
                     disabled={isLoading}
                     onChange={onPasswordChange}
                     isInvalid={passwordError}
@@ -97,17 +120,33 @@ function SigninPage() {
                   <Form.Control.Feedback type='invalid'>{passwordError}</Form.Control.Feedback>
                 </Form.Group>
 
-                <div className='d-grid'>
-                  <Button variant='outline-primary' type='Submit' disabled={isLoading}>{isLoading ? 'Loading...' : 'Sign in'}</Button>
+                <div className='d-grid mb-3'>
+                  <Button variant='outline-primary' type='Submit' disabled={isLoading}>{isLoading ? 'Loading...' : (isSignIn ? 'Sign in' : 'Sign up')}</Button>
                 </div>
+
+                {isSignIn && (
+                  <div className='text-center'>
+                    <a href='/reset-password'>Forgot password?</a>
+
+                    <div className='mt-5'>
+                      Don't have an account? <a href='/sign-up'>Sign up</a>
+                    </div>
+                  </div>
+                )}
+
+                {!isSignIn && (
+                  <div className='text-center mt-5'>
+                    Already have an account? <a href='/sign-in'>Sign in</a>
+                  </div>
+                )}
               </Form>
             </Stack>
           </Col>
         </Row>
       </Container>
-    </div>
 
+    </div>
   );
 }
 
-export default SigninPage;
+export default AuthPage;

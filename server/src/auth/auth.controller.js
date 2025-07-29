@@ -1,6 +1,15 @@
 import express from 'express';
 import authService from './auth.service.js';
 
+/**
+ * @param {express.Response} res 
+ * @param {object} data
+ */
+const setCookieToken = (res, data) => {
+    res.cookie('token', data.token, { httpOnly: true, secure: false, sameSite: 'lax', maxAge: 3600000 });
+    res.sendStatus(200);
+}
+
 const controller = {
     /**
      * @param {express.Request} req 
@@ -8,7 +17,7 @@ const controller = {
      */
     signIn: async (req, res) => {
         const { email, password } = req.body;
-        res.send(await authService.login(email, password));
+        setCookieToken(res, await authService.login(email, password));
     },
 
     /**
@@ -17,7 +26,7 @@ const controller = {
      */
     signUp: async (req, res) => {
         const { name, email, password } = req.body;
-        res.send(await authService.signup(name, email, password));
+        setCookieToken(res, await authService.signup(name, email, password));
     },
 }
 

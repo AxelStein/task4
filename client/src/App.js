@@ -1,9 +1,9 @@
 import './App.css';
-import SignInPage from './sign-in/SignInPage.js';
+import AuthPage from './auth/AuthPage.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
-  return SignInPage();
+  return AuthPage(true);
 }
 
 export default App;
