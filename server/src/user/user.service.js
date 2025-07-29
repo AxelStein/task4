@@ -35,8 +35,9 @@ const service = {
      * @param {Number} id 
      * @returns {Promise<User>}
      */
-    getNotBlockedUserById(id) {
-        return userRepository.getNotBlockedUserById(id);
+    async getNotBlockedUserById(id) {
+        const user = await userRepository.getNotBlockedUserById(id);
+        return await userRepository.updateUserLastSeenDate(user.id);
     },
 
     /**

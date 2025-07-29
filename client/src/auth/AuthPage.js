@@ -8,6 +8,7 @@ import apiClient from '../api/api.client.js';
 import { useState } from 'react';
 import Alert from 'react-bootstrap/Alert';
 import apiErrorHandler from '../api/error.handler.js';
+import authRepository from '../api/auth.repository.js';
 
 function AuthPage(isSignIn) {
   const [validated, setValidated] = useState(false);
@@ -46,28 +47,26 @@ function AuthPage(isSignIn) {
 
     setLoading(true);
 
-    setTimeout(() => {
-      apiClient.post(isSignIn ? '/auth/sign-in' : '/auth/sign-up', body)
-        .then(() => {
-          setValidated(true);
-          console.log('success');
-        })
-        .catch(err => {
-          setLoading(false);
+    (isSignIn ? authRepository.signIn(body) : authRepository.signUp(body))
+      .then(() => {
+        setValidated(true);
+        console.log('success');
+      })
+      .catch(err => {
+        setLoading(false);
 
-          const data = apiErrorHandler(err);
-          const details = data.details;
+        const data = apiErrorHandler(err);
+        const details = data.details;
 
-          if (details && (details.name || details.email || details.password)) {
-            setNameError(details.name);
-            setEmailError(details.email);
-            setPasswordError(details.password);
-          } else {
-            setError(data.message);
-          }
-        })
-        .finally(() => setLoading(false));
-    }, 500);
+        if (details && (details.name || details.email || details.password)) {
+          setNameError(details.name);
+          setEmailError(details.email);
+          setPasswordError(details.password);
+        } else {
+          setError(data.message);
+        }
+      })
+      .finally(() => setLoading(false));
   };
 
   return (

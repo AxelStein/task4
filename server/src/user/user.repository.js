@@ -44,21 +44,20 @@ const repository = {
     },
 
     /**
+     * @param {Number} id 
+     * @returns {Promise}
+     */
+    updateUserLastSeenDate(id) {
+        return User.update({ lastSeen: new Date() }, { where: { id } });
+    },
+
+    /**
      * 
      * @param {string} email 
      * @returns {Promise<User>}
      */
     getByEmail(email) {
         return User.findOne({ attributes: { include: ['password'] }, where: { email }, raw: true });
-    },
-
-    /**
-     * 
-     * @param {Number} id 
-     * @returns {Promise<User>}
-     */
-    getById(id) {
-        return User.findByPk(id, { raw: true });
     },
 
     /**
