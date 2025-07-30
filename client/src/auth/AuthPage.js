@@ -4,33 +4,34 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Stack from 'react-bootstrap/Stack';
-import apiClient from '../api/api.client.js';
 import { useState } from 'react';
-import Alert from 'react-bootstrap/Alert';
-import apiErrorHandler from '../api/error.handler.js';
+import handleApiError from '../api/error.handler.js';
 import authRepository from '../api/auth.repository.js';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
-function AuthPage(isSignIn) {
-  const [validated, setValidated] = useState(false);
-  const [error, setError] = useState(null);
+function AuthPage({ isSignIn }) {
   const [nameError, setNameError] = useState(null);
   const [emailError, setEmailError] = useState(null);
   const [passwordError, setPasswordError] = useState(null);
-  const [isLoading, setLoading] = useState(false);
+  const [isSubmit, setIsSubmit] = useState(false);
+  const navigate = useNavigate();
+
+  const showErrorToast = (err) => {
+    toast.error(handleApiError(err).message);
+  }
 
   const onNameChange = () => {
     setNameError(null);
-    setError(null);
   };
 
   const onEmailChange = () => {
     setEmailError(null);
-    setError(null);
   };
 
   const onPasswordChange = () => {
     setPasswordError(null);
-    setError(null);
   };
 
   const handleSubmit = (event) => {
@@ -45,28 +46,21 @@ function AuthPage(isSignIn) {
       body.name = form.get("name");
     }
 
-    setLoading(true);
+    setIsSubmit(true);
 
     (isSignIn ? authRepository.signIn(body) : authRepository.signUp(body))
-      .then(() => {
-        setValidated(true);
-        console.log('success');
-      })
+      .then(() => navigate('/', { replace: true }))
       .catch(err => {
-        setLoading(false);
-
-        const data = apiErrorHandler(err);
-        const details = data.details;
-
+        const details = handleApiError(err).details;
         if (details && (details.name || details.email || details.password)) {
           setNameError(details.name);
           setEmailError(details.email);
           setPasswordError(details.password);
         } else {
-          setError(data.message);
+          showErrorToast(err);
         }
       })
-      .finally(() => setLoading(false));
+      .finally(() => setIsSubmit(false));
   };
 
   return (
@@ -77,9 +71,7 @@ function AuthPage(isSignIn) {
             <Stack>
               <h1 className='mb-5'>{isSignIn ? 'Sign in to App' : 'Sign up to App'}</h1>
 
-              {error && (<Alert variant='danger'>{error}</Alert>)}
-
-              <Form validated={validated} onSubmit={handleSubmit}>
+              <Form onSubmit={handleSubmit}>
                 {!isSignIn && (
                   <Form.Group className='mb-3' controlId='formName'>
                     <Form.Label>Name</Form.Label>
@@ -99,7 +91,7 @@ function AuthPage(isSignIn) {
                     required
                     type='email'
                     placeholder='Enter email'
-                    disabled={isLoading}
+                    disabled={isSubmit}
                     onChange={onEmailChange}
                     isInvalid={emailError}
                     name='email' />
@@ -112,7 +104,7 @@ function AuthPage(isSignIn) {
                     required
                     type='password'
                     placeholder='Enter password'
-                    disabled={isLoading}
+                    disabled={isSubmit}
                     onChange={onPasswordChange}
                     isInvalid={passwordError}
                     name='password' />
@@ -120,7 +112,7 @@ function AuthPage(isSignIn) {
                 </Form.Group>
 
                 <div className='d-grid mb-3'>
-                  <Button variant='outline-primary' type='Submit' disabled={isLoading}>{isLoading ? 'Loading...' : (isSignIn ? 'Sign in' : 'Sign up')}</Button>
+                  <Button variant='outline-primary' type='Submit' disabled={isSubmit}>{isSubmit ? 'Submit...' : (isSignIn ? 'Sign in' : 'Sign up')}</Button>
                 </div>
 
                 {isSignIn && (
@@ -144,6 +136,18 @@ function AuthPage(isSignIn) {
         </Row>
       </Container>
 
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        hideProgressBar={true}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light" // "light", "dark", "colored"
+      />
     </div>
   );
 }

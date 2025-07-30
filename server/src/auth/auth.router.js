@@ -6,5 +6,6 @@ import { loginSchema, signupSchema } from "./auth.schemas.js";
 const router = express.Router();
 router.post('/sign-in', validateBody(loginSchema), controller.signIn);
 router.post('/sign-up', validateBody(signupSchema), controller.signUp);
+router.post('/sign-out', controller.signOut);
 
 export default router;

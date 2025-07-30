@@ -1,9 +1,20 @@
-const apiErrorHandler = (err) => {
+const handleApiError = (err) => {
+    console.log(err);
     if (err.response) {
-        return err.response.data;
+        const data = err.response.data;
+        const r = {
+            data, 
+            status: err.response.status,
+        }
+        if (typeof data === 'string') {
+            r.message = data;
+        } else {
+            r.message = data.message;
+        }
+        return r;
     } else {
         return { message: err.message };
     }
 }
 
-export default apiErrorHandler;
+export default handleApiError;

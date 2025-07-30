@@ -18,7 +18,16 @@ const createToken = (user) => new Promise((resolve, reject) => {
             if (err) {
                 reject(err);
             } else {
-                resolve({ id: user.id, token });
+                resolve({ 
+                    user: {
+                        id: user.id,
+                        name: user.name,
+                        email: user.email,
+                        isBlocked: user.isBlocked,
+                        lastSeen: user.lastSeen,
+                    }, 
+                    token 
+                });
             }
         }
     );

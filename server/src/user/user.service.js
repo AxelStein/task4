@@ -37,7 +37,10 @@ const service = {
      */
     async getNotBlockedUserById(id) {
         const user = await userRepository.getNotBlockedUserById(id);
-        return await userRepository.updateUserLastSeenDate(user.id);
+        if (user) {
+            await userRepository.updateUserLastSeenDate(user.id);
+        }
+        return user;
     },
 
     /**

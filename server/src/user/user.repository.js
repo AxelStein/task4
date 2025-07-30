@@ -1,13 +1,13 @@
 import User from './user.model.js';
 import { Op } from 'sequelize';
 import db from '../db/index.js';
-import { ValidationError } from '../error/index.js';
+import { ApiError } from '../error/index.js';
 
 const doOnUsers = (ids, action) => new Promise((resolve, reject) => {
     db.transaction(async (transaction) => {
         const count = await User.count({ where: { id: { [Op.in]: ids } }, transaction });
         if (count !== ids.length) {
-            throw new ValidationError("Invalid ids");
+            throw new ApiError("Data inconsistency detected", 410);
         } else {
             await action(transaction);
         }
