@@ -3,7 +3,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Button from 'react-bootstrap/Button';
 import { BsUnlockFill, BsLockFill, BsTrash } from 'react-icons/bs';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import userRepository from '../api/user.repository.js';
 import Form from 'react-bootstrap/Form';
 import handleApiError from '../api/error.handler.js';
@@ -32,7 +32,7 @@ function Dashboard() {
     toast.info(message);
   }
 
-  const fetchUsers = (init, sortBy, sortAsc) => {
+  const fetchUsers = useCallback(() => (init, sortBy, sortAsc) => {
     clearCheckedIds();
     setIsFetchingUsers(init === true);
 
@@ -40,7 +40,7 @@ function Dashboard() {
       .then(res => setUsers(res.data))
       .catch(err => setError(handleApiError(err).message))
       .finally(() => setIsFetchingUsers(false));
-  }
+  }, []);
 
   const checkForDataInconsistency = (err) => {
     const status = handleApiError(err).status;
