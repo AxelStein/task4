@@ -8,6 +8,11 @@ import cors from 'cors';
 import { createPassportJwtStrategy } from './src/auth/auth.passport.js';
 import cookieParser from 'cookie-parser';
 import path from "path";
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 app.use(express.json());
