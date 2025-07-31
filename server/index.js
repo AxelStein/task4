@@ -26,7 +26,7 @@ app.use(express.static(path.join(__dirname, '../client/build')));
 app.use(cookieParser());
 app.use(passport.initialize());
 app.use('/api/v1', apiRouterV1);
-app.get('*', (req, res) => {
+app.get('/*path', (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 });
 app.use(errorHandler);
