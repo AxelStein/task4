@@ -4,7 +4,7 @@ import apiRouterV1 from './src/api.router.v1.js';
 import errorHandler from './src/middleware/error.handler.js';
 import db from './src/db/index.js';
 import passport from 'passport';
-// import cors from 'cors';
+import cors from 'cors';
 import { createPassportJwtStrategy } from './src/auth/auth.passport.js';
 import cookieParser from 'cookie-parser';
 /*
