@@ -7,16 +7,23 @@ import passport from 'passport';
 import cors from 'cors';
 import { createPassportJwtStrategy } from './src/auth/auth.passport.js';
 import cookieParser from 'cookie-parser';
+import path from "path";
 
 const app = express();
 app.use(express.json());
+/*
 app.use(cors({
-    origin: "http://localhost:3003",
+    origin: "http://localhost:3000",
     credentials: true,
 }));
+*/
+app.use(express.static(path.join(__dirname, '../client/build')));
 app.use(cookieParser());
 app.use(passport.initialize());
 app.use('/api/v1', apiRouterV1);
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+});
 app.use(errorHandler);
 
 passport.use(createPassportJwtStrategy());
