@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import './App.css';
 import AuthInterceptor from './auth/AuthInterceptor.js';
 import AuthPage from './auth/AuthPage.js';
