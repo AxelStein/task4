@@ -7,14 +7,6 @@ import passport from 'passport';
 import cors from 'cors';
 import { createPassportJwtStrategy } from './src/auth/auth.passport.js';
 import cookieParser from 'cookie-parser';
-/*
-import path from "path";
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-*/
 
 const app = express();
 app.use(express.json());
@@ -22,16 +14,9 @@ app.use(cors({
     origin: process.env.CLIENT_URL,
     credentials: true,
 }));
-// app.use(express.static(path.join(__dirname, '../client/build')));
 app.use(cookieParser());
 app.use(passport.initialize());
 app.use('/api/v1', apiRouterV1);
-/*
-app.get('/*path', (req, res) => {
-    console.log(`path ${path.join(__dirname, '../client/build', 'index.html')}`);
-    res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
-});
-*/
 app.use(errorHandler);
 
 passport.use(createPassportJwtStrategy());

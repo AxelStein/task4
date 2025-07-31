@@ -1,7 +1,8 @@
+import { LOCAL_USER } from "../constants.js";
 import apiClient from "./api.client.js";
 
 const saveUser = (res) => {
-    localStorage.setItem('user', JSON.stringify(res.data.user));
+    localStorage.setItem(LOCAL_USER, JSON.stringify(res.data.user));
 }
 
 const repository = {
@@ -18,7 +19,7 @@ const repository = {
 
     signOut: (body) => {
         return apiClient.post('/auth/sign-out', body)
-            .then(res => localStorage.removeItem("user"));
+            .then(res => localStorage.removeItem(LOCAL_USER));
     }
 }
 

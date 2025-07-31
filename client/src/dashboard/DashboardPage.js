@@ -11,6 +11,7 @@ import Alert from 'react-bootstrap/Alert';
 import moment from 'moment';
 import Tooltip from 'react-bootstrap/Tooltip';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import { LOCAL_USER } from '../constants.js';
 
 function Dashboard() {
   const [isFetchingUsers, setIsFetchingUsers] = useState(false);
@@ -20,7 +21,7 @@ function Dashboard() {
 
   let userName = "";
   try {
-    const user = JSON.parse(localStorage.getItem('user'));
+    const user = JSON.parse(localStorage.getItem(LOCAL_USER));
     userName = user ? user.name : "";
   } catch (e) { }
 
@@ -87,7 +88,7 @@ function Dashboard() {
     setCheckedIds(newSet);
   }
 
-  const allUsersAreChecked = () => checkedIds.size === users.length;
+  const allUsersAreChecked = () => users.length !== 0 && checkedIds.size === users.length;
 
   const handleAllCheckboxChange = () => {
     if (allUsersAreChecked()) {
