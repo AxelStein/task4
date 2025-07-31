@@ -97,7 +97,7 @@ function Dashboard() {
     }
   }
 
-  useEffect(() => fetchUsers(true), []);
+  useEffect(() => fetchUsers(true), [fetchUsers]);
 
   return (
     <div className="flex flex-col">
