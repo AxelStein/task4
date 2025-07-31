@@ -3,7 +3,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Button from 'react-bootstrap/Button';
 import { BsUnlockFill, BsLockFill, BsTrash } from 'react-icons/bs';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, use } from 'react';
 import userRepository from '../api/user.repository.js';
 import Form from 'react-bootstrap/Form';
 import handleApiError from '../api/error.handler.js';
@@ -32,11 +32,11 @@ function Dashboard() {
     toast.info(message);
   }
 
-  const fetchUsers = useCallback(() => (init, sortBy, sortAsc) => {
+  const fetchUsers = useCallback(() => {
     clearCheckedIds();
-    setIsFetchingUsers(init === true);
+    setIsFetchingUsers(true);
 
-    userRepository.getUsers(sortBy, sortAsc)
+    userRepository.getUsers()
       .then(res => setUsers(res.data))
       .catch(err => setError(handleApiError(err).message))
       .finally(() => setIsFetchingUsers(false));
@@ -97,7 +97,7 @@ function Dashboard() {
     }
   }
 
-  useEffect(() => fetchUsers(true), [fetchUsers]);
+  useEffect(() => fetchUsers(), [fetchUsers]);
 
   return (
     <div className="flex flex-col">
