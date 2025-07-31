@@ -18,12 +18,10 @@ const __dirname = dirname(__filename);
 
 const app = express();
 app.use(express.json());
-/*
 app.use(cors({
-    origin: "http://localhost:3000",
+    origin: process.env.CLIENT_URL,
     credentials: true,
 }));
-*/
 // app.use(express.static(path.join(__dirname, '../client/build')));
 app.use(cookieParser());
 app.use(passport.initialize());
