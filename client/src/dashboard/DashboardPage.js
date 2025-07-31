@@ -32,9 +32,9 @@ function Dashboard() {
     toast.info(message);
   }
 
-  const fetchUsers = useCallback(() => {
+  const fetchUsers = useCallback((init) => {
     clearCheckedIds();
-    setIsFetchingUsers(true);
+    setIsFetchingUsers(init === true);
 
     userRepository.getUsers()
       .then(res => setUsers(res.data))
@@ -97,7 +97,7 @@ function Dashboard() {
     }
   }
 
-  useEffect(() => fetchUsers(), [fetchUsers]);
+  useEffect(() => fetchUsers(true), [fetchUsers]);
 
   return (
     <div className="flex flex-col">
