@@ -196,7 +196,7 @@ function Dashboard() {
                     <td>{user.name}</td>
                     <td>{user.email}</td>
                     <td>
-                      <OverlayTrigger placement='bottom' overlay={<Tooltip>{moment(user.lastSeen).format('MMMM Do YYYY, k:mm:ss')}</Tooltip>}>
+                      <OverlayTrigger placement='top' container={document.body} overlay={<Tooltip>{moment(user.lastSeen).format('MMMM Do YYYY, k:mm:ss')}</Tooltip>}>
                         <div>
                           {moment(user.lastSeen).fromNow()}
                         </div>
