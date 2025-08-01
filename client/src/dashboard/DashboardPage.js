@@ -2,9 +2,10 @@ import Table from 'react-bootstrap/Table';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Button from 'react-bootstrap/Button';
-import { BsUnlockFill, BsLockFill, BsTrash } from 'react-icons/bs';
+import { BsUnlockFill, BsLockFill, BsTrash, BsArrowDown, BsArrowUp } from 'react-icons/bs';
 import { useEffect, useState, useCallback } from 'react';
 import userRepository from '../api/user.repository.js';
+import authRepository from '../api/auth.repository.js';
 import Form from 'react-bootstrap/Form';
 import handleApiError from '../api/error.handler.js';
 import Alert from 'react-bootstrap/Alert';
@@ -12,12 +13,19 @@ import moment from 'moment';
 import Tooltip from 'react-bootstrap/Tooltip';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import { LOCAL_USER } from '../constants.js';
+import { useNavigate } from 'react-router-dom';
+import Dropdown from 'react-bootstrap/Dropdown';
+import SplitButton from 'react-bootstrap/SplitButton';
 
 function Dashboard() {
-  const [isFetchingUsers, setIsFetchingUsers] = useState(false);
+  const [isFetchingUsers, setIsFetchingUsers] = useState(true);
   const [checkedIds, setCheckedIds] = useState(new Set());
   const [users, setUsers] = useState([]);
-  const [error, setError] = useState(null);
+  const [fetchError, setFetchError] = useState(null);
+  const [sortBy, setSortBy] = useState('lastSeen');
+  const [sortAsc, setSortAsc] = useState(false);
+
+  const navigate = useNavigate();
 
   let userName = "";
   try {
@@ -33,19 +41,26 @@ function Dashboard() {
     toast.info(message);
   }
 
-  const fetchUsers = useCallback((init) => {
-    clearCheckedIds();
-    setIsFetchingUsers(init === true);
+  const fetchUsers = useCallback(() => {
+    setFetchError(null);
 
-    userRepository.getUsers()
+    userRepository.getUsers(sortBy, sortAsc)
       .then(res => setUsers(res.data))
-      .catch(err => setError(handleApiError(err).message))
+      .catch(err => {
+        const message = handleApiError(err).message;
+        if (isFetchingUsers) {
+          setFetchError(message);
+        } else {
+          showErrorToast(err);
+        }
+      })
       .finally(() => setIsFetchingUsers(false));
-  }, []);
+  }, [sortBy, sortAsc, isFetchingUsers]);
 
   const checkForDataInconsistency = (err) => {
     const status = handleApiError(err).status;
     if (status && status === 410) {
+      clearCheckedIds();
       fetchUsers();
     }
   }
@@ -67,6 +82,7 @@ function Dashboard() {
   const deleteUsers = () => {
     userRepository.deleteUsers([...checkedIds])
       .then(() => {
+        clearCheckedIds();
         fetchUsers();
         showToast('Users have been deleted');
       })
@@ -98,7 +114,28 @@ function Dashboard() {
     }
   }
 
-  useEffect(() => fetchUsers(true), [fetchUsers]);
+  const renderSortIndicator = (column) => {
+    if (column === sortBy) {
+      return sortAsc ? <BsArrowUp /> : <BsArrowDown />;
+    }
+    return null;
+  }
+
+  const handleColumnClick = (column) => {
+    if (column === sortBy) {
+      setSortAsc(!sortAsc);
+    } else {
+      setSortBy(column);
+    }
+  }
+
+  const handleSignOutClick = () => {
+    authRepository.signOut()
+      .then(() => navigate('/sign-in', { replace: true }))
+      .catch(e => showErrorToast(e));
+  }
+
+  useEffect(() => fetchUsers(), [fetchUsers]);
 
   return (
     <div className="flex flex-col">
@@ -129,9 +166,9 @@ function Dashboard() {
           </Button>
         </div>
 
-        <div>
-          {userName} <span>Sign out</span>
-        </div>
+        <SplitButton title={userName} variant='primary'>
+          <Dropdown.Item onClick={handleSignOutClick}>Sign out</Dropdown.Item>
+        </SplitButton>
 
       </div>
 
@@ -142,9 +179,9 @@ function Dashboard() {
               <thead>
                 <tr>
                   <th><Form.Check onChange={handleAllCheckboxChange} checked={allUsersAreChecked()} /></th>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Last seen</th>
+                  <th onClick={() => handleColumnClick('name')}>Name {renderSortIndicator('name')}</th>
+                  <th onClick={() => handleColumnClick('email')}>Email {renderSortIndicator('email')}</th>
+                  <th onClick={() => handleColumnClick('lastSeen')}>Last seen {renderSortIndicator('lastSeen')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -170,7 +207,7 @@ function Dashboard() {
               </tbody>
             </Table>
 
-            {error && (<Alert variant='danger' className='m-3'>{error}</Alert>)}
+            {fetchError && (<Alert variant='danger' className='m-3'>{fetchError}</Alert>)}
 
             <ToastContainer
               position="top-center"

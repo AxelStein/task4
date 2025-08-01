@@ -6,7 +6,7 @@ const idsSchema = Joi.array()
     .required();
 
 export const getListSchema = Joi.object({
-    sortBy: Joi.string().valid('lastSeen', 'name'),
+    sortBy: Joi.string().valid('lastSeen', 'name', 'email'),
     sortAsc: Joi.bool(),
 });
 

@@ -17,8 +17,8 @@ const repository = {
             .then(res => saveUser(res));
     },
 
-    signOut: (body) => {
-        return apiClient.post('/auth/sign-out', body)
+    signOut: () => {
+        return apiClient.post('/auth/sign-out')
             .then(res => localStorage.removeItem(LOCAL_USER));
     }
 }

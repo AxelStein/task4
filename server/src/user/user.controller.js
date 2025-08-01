@@ -9,7 +9,7 @@ const controller = {
      */
     getList: async (req, res) => {
         const { sortBy, sortAsc } = req.query;
-        res.send(await userService.getUsers(sortBy, sortAsc));
+        res.send(await userService.getUsers(sortBy, sortAsc === 'true'));
     },
 
     /**
