@@ -6,7 +6,7 @@ import authService from './auth.service.js';
  * @param {object} data
  */
 const setCookieToken = (res, data) => {
-    res.cookie('token', data.token, { httpOnly: true, secure: false, sameSite: 'lax', maxAge: 3600000 });
+    res.cookie('token', data.token, { httpOnly: true, secure: true, sameSite: 'lax', maxAge: 3600000 });
     res.send(data);
 }
 
@@ -35,6 +35,26 @@ const controller = {
      */
     signOut: (req, res) => {
         res.clearCookie('token');
+        res.sendStatus(200);
+    },
+
+    /**
+     * @param {express.Request} req 
+     * @param {express.Response} res 
+     */
+    resetPassword: async (req, res) => {
+        const { email } = req.body;
+        await authService.resetPassword(email);
+        res.sendStatus(200);
+    },
+
+    /**
+     * @param {express.Request} req 
+     * @param {express.Response} res 
+     */
+    restorePassword: async (req, res) => {
+        const { token, password } = req.body;
+        await authService.restorePassword(token, password);
         res.sendStatus(200);
     }
 }

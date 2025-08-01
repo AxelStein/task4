@@ -1,9 +1,8 @@
 const handleApiError = (err) => {
-    console.log(err);
     if (err.response) {
         const data = err.response.data;
         const r = {
-            data, 
+            data,
             status: err.response.status,
         }
         if (typeof data === 'string') {

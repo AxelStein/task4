@@ -22,8 +22,7 @@ const service = {
     },
 
     /**
-     * 
-     * @param {string} email 
+     * @param {string} email
      * @returns {Promise<User>}
      */
     getByEmail(email) {

@@ -51,7 +51,7 @@ function AuthPage({ isSignIn }) {
     (isSignIn ? authRepository.signIn(body) : authRepository.signUp(body))
       .then(() => navigate('/', { replace: true }))
       .catch(err => {
-        const details = handleApiError(err).details;
+        const details = handleApiError(err).data.details;
         if (details && (details.name || details.email || details.password)) {
           setNameError(details.name);
           setEmailError(details.email);
@@ -146,7 +146,7 @@ function AuthPage({ isSignIn }) {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="light" // "light", "dark", "colored"
+        theme="light"
       />
     </div>
   );

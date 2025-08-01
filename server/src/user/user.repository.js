@@ -1,6 +1,7 @@
 import User from './user.model.js';
 import { Op } from 'sequelize';
 import db from '../db/index.js';
+import { Transaction } from 'sequelize';
 import { ApiError } from '../error/index.js';
 
 const doOnUsers = (ids, action) => new Promise((resolve, reject) => {
@@ -54,10 +55,16 @@ const repository = {
     /**
      * 
      * @param {string} email 
+     * @param {Transaction|null} transaction
      * @returns {Promise<User>}
      */
-    getByEmail(email) {
-        return User.findOne({ attributes: { include: ['password'] }, where: { email }, raw: true });
+    getByEmail(email, transaction = null) {
+        return User.findOne({
+            attributes: { include: ['password'] },
+            where: { email },
+            raw: true,
+            transaction
+        });
     },
 
     /**
@@ -79,6 +86,17 @@ const repository = {
         return doOnUsers(ids, async (transaction) => {
             return User.destroy({ where: { id: { [Op.in]: ids } }, transaction });
         });
+    },
+
+    /**
+     * 
+     * @param {number} userId 
+     * @param {string} password 
+     * @param {Transaction|null} transaction 
+     * @returns {Promise}
+     */
+    updateUserPassword: (userId, password, transaction = null) => {
+        return User.update({ password }, { where: { id: userId }, transaction });
     }
 }
 

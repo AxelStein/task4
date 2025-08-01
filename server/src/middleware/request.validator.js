@@ -7,7 +7,7 @@ import { ValidationError } from "../error/index.js";
  * @param {string} prop
  */
 const validateSchema = (schema, prop = 'body') => (req, res, next) => {
-    const { error } = schema.validate(req[prop], { abortEarly: false });
+    const { error, value } = schema.validate(req[prop], { abortEarly: false });
     if (error) {
         console.error(error);
         const details = {};
@@ -17,6 +17,11 @@ const validateSchema = (schema, prop = 'body') => (req, res, next) => {
             details[path] = msg;
         });
         throw new ValidationError(error.toString(), details);
+    }
+    if (prop === 'query') {
+        req.validatedQuery = value;
+    } else {
+        req[prop] = value;
     }
     next();
 }
