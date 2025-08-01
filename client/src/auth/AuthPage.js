@@ -79,6 +79,7 @@ function AuthPage({ isSignIn }) {
                       required type='name'
                       placeholder='Enter name'
                       isInvalid={nameError}
+                      disabled={isSubmit}
                       onChange={onNameChange}
                       name='name' />
                     <Form.Control.Feedback type='invalid'>{nameError}</Form.Control.Feedback>
