@@ -7,8 +7,9 @@ import Stack from 'react-bootstrap/Stack';
 import { useState } from 'react';
 import handleApiError from '../api/error.handler.js';
 import authRepository from '../api/auth.repository.js';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import toastContainer from '../components/toast.container.js';
 import { useNavigate } from 'react-router-dom';
 
 function AuthPage({ isSignIn }) {
@@ -137,18 +138,7 @@ function AuthPage({ isSignIn }) {
         </Row>
       </Container>
 
-      <ToastContainer
-        position="top-center"
-        autoClose={2000}
-        hideProgressBar={true}
-        newestOnTop={true}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
+      {toastContainer()}
     </div>
   );
 }

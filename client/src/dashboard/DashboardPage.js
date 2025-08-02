@@ -1,5 +1,5 @@
 import Table from 'react-bootstrap/Table';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Button from 'react-bootstrap/Button';
 import { BsUnlockFill, BsLockFill, BsTrash, BsArrowDown, BsArrowUp } from 'react-icons/bs';
@@ -16,6 +16,7 @@ import { LOCAL_USER } from '../constants.js';
 import { useNavigate } from 'react-router-dom';
 import Dropdown from 'react-bootstrap/Dropdown';
 import SplitButton from 'react-bootstrap/SplitButton';
+import toastContainer from '../components/toast.container.js';
 
 function Dashboard() {
   const [isFetchingUsers, setIsFetchingUsers] = useState(true);
@@ -209,18 +210,7 @@ function Dashboard() {
 
             {fetchError && (<Alert variant='danger' className='m-3'>{fetchError}</Alert>)}
 
-            <ToastContainer
-              position="top-center"
-              autoClose={2000}
-              hideProgressBar={true}
-              newestOnTop={true}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-              theme="light"
-            />
+            {toastContainer()}
           </div>
         )}
       </main>

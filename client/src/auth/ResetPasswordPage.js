@@ -7,8 +7,9 @@ import Stack from 'react-bootstrap/Stack';
 import { useState } from 'react';
 import handleApiError from '../api/error.handler.js';
 import authRepository from '../api/auth.repository.js';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import toastContainer from '../components/toast.container.js';
 import { useSearchParams } from 'react-router-dom';
 import Alert from 'react-bootstrap/Alert';
 
@@ -139,18 +140,7 @@ function ResetPasswordPage() {
         </Row>
       </Container>
 
-      <ToastContainer
-        position="top-center"
-        autoClose={2000}
-        hideProgressBar={true}
-        newestOnTop={true}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
+      {toastContainer()}
     </div>
   );
 }
