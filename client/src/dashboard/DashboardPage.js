@@ -194,7 +194,7 @@ function Dashboard() {
                         onChange={handleUserCheckboxChange}
                         checked={checkedIds.has(user.id)} />
                     </td>
-                    <td>{user.name}</td>
+                    <td className={user.isBlocked ? 'text-decoration-line-through' : null}>{user.name}</td>
                     <td>{user.email}</td>
                     <td>
                       <OverlayTrigger placement='top' container={document.body} overlay={<Tooltip>{moment(user.lastSeen).format('MMMM Do YYYY, k:mm:ss')}</Tooltip>}>
